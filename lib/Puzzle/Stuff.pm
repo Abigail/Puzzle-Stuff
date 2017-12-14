@@ -1,4 +1,4 @@
-package Puzzle-Stuff;
+package Puzzle::Stuff;
 
 use 5.010;
 use strict;
@@ -6,6 +6,8 @@ use warnings;
 no  warnings 'syntax';
 
 our $VERSION = '2017121401';
+
+use Puzzle::Stuff::UnionFind;
 
 
 1;
