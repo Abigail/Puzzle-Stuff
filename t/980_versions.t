@@ -28,7 +28,7 @@ my $top   = -d "blib" ? "blib/lib" : "lib";
 my @files = `$FIND $top -name [a-zA-Z_]*.pm`;
 chomp @files;
 
-my $main_version = version "$top/Puzzle-Stuff.pm";
+my $main_version = version "$top/Puzzle::Stuff.pm";
 unless ($main_version) {
     fail "Cannot find a version in main file";
     done_testing;

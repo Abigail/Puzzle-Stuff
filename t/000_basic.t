@@ -11,11 +11,11 @@ use Test::More 0.88;
 our $r = eval "require Test::NoWarnings; 1";
 
 BEGIN {
-    use_ok ('Puzzle-Stuff') or
-        BAIL_OUT ("Loading of 'Puzzle-Stuff' failed");
+    use_ok ('Puzzle::Stuff') or
+        BAIL_OUT ("Loading of 'Puzzle::Stuff' failed");
 }
 
-ok defined $Puzzle-Stuff::VERSION, "VERSION is set";
+ok defined $Puzzle::Stuff::VERSION, "VERSION is set";
 
 Test::NoWarnings::had_no_warnings () if $r;
 
