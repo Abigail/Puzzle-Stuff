@@ -14,7 +14,7 @@ fieldhash my %universe;   # Maps elements to consecutive non-negative integers
 fieldhash my %parent;     # Array with parents; each element has exactly
                           # one parent. If the parent is the same as the
                           # element, it's the top of the set.
-fieldhash my %size;       # Number of elements in a set
+fieldhash my %rank;       # Rank of a set.
 fieldhash my %nr_of_sets; # Number of sets in universe
 
 sub new ($class) {
@@ -24,7 +24,7 @@ sub new ($class) {
 sub init ($self) {
     $universe   {$self} = {};
     $parent     {$self} = [];
-    $size       {$self} = [];
+    $rank       {$self} = [];
     $nr_of_sets {$self} = 0;
     $self;
 }
@@ -42,11 +42,11 @@ sub add ($self, $element) {
 
     #
     # Map the element to its key; set itself as the parent (it's the root
-    # of its set); set the size of its set to 1; increment the number of sets
+    # of its set); set the rank of its set to 0; increment the number of sets
     #
     $universe   {$self} {$element} = $key;
     $parent     {$self} [$key]     = $key;
-    $size       {$self} [$key]     = 1;
+    $rank       {$self} [$key]     = 0;
     $nr_of_sets {$self} ++;
 
     $self;
@@ -94,26 +94,36 @@ sub union ($self, $element1, $element2) {
     my $set2 = $self -> find ($element2) // return;
 
     my $parent = $parent {$self};
-    my $size   = $size   {$self};
+    my $rank   = $rank   {$self};
 
     #
     # If they're in the same set, we're done.
     #
     return $set1 if $set1 == $set2;
 
-    #
-    # Put the smaller set right under the root of the larger
-    #
-    ($set1, $set2) = ($set2, $set1) if $$size [$set2] < $$size [$set1];
+    my $return;
 
-    $$parent [$set1]  = $set2;
-    $$size   [$set2] += $$size [$set1];
-    $$size   [$set1]  = undef;
+    #
+    # Put the set with the smaller rank under the one with the larger
+    #
+    if    ($$rank [$set1] < $$rank [$set2]) {
+        $$parent  [$set1] = $set2;
+        $return =  $set2;
+    }
+    elsif ($$rank [$set2] < $$rank [$set1]) {
+        $$parent  [$set2] = $set1;
+        $return =  $set1;
+    }
+    else {
+        $$parent  [$set1] = $set2;
+        $$rank    [$set2] ++;
+        $return =  $set2;
+    }
 
     $nr_of_sets {$self} --;  # If two sets unite, the number of 
                              # sets decreases
 
-    $set2;
+    $return;
 }
 
 
