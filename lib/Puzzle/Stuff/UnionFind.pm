@@ -10,12 +10,11 @@ use experimental 'signatures';
 
 use Hash::Util 'fieldhash';
 
-fieldhash my %universe;   # Maps elements to consecutive non-negative integers
-fieldhash my %parent;     # Array with parents; each element has exactly
-                          # one parent. If the parent is the same as the
-                          # element, it's the top of the set.
+fieldhash my %universe;   # Maps elements to consecutive non-negative integers.
+fieldhash my %parent;     # Array with parents; if the element does not
+                          # have a parent, it's the root of the set.
 fieldhash my %rank;       # Rank of a set.
-fieldhash my %nr_of_sets; # Number of sets in universe
+fieldhash my %nr_of_sets; # Number of sets in the universe.
 
 sub new ($class) {
     bless \do {my $var} => $class;
@@ -38,14 +37,15 @@ sub add ($self, $element) {
     #
     # We have a new element. Give it an index ($key)
     #
-    my $key = @{$parent {$self} ||= []};
+    my $key = @{$parent {$self} ||= []} + 1;
 
     #
-    # Map the element to its key; set itself as the parent (it's the root
-    # of its set); set the rank of its set to 0; increment the number of sets
+    # Map the element to its key; set the parent to 0 (indicating it's the
+    # root of the set); set the rank of its set to 0; increment the
+    # number of sets.
     #
     $universe   {$self} {$element} = $key;
-    $parent     {$self} [$key]     = $key;
+    $parent     {$self} [$key]     = 0;
     $rank       {$self} [$key]     = 0;
     $nr_of_sets {$self} ++;
 
@@ -68,7 +68,7 @@ sub find ($self, $element) {
     # Walk the path to the parent. Remember the steps.
     #
     my @seen;
-    while ($key != $$parent [$key]) {
+    while ($$parent [$key]) {
         push @seen => $key;
         $key = $$parent [$key];
     }
@@ -104,7 +104,8 @@ sub union ($self, $element1, $element2) {
     my $return;
 
     #
-    # Put the set with the smaller rank under the one with the larger
+    # Put the set with the smaller rank under the one with the larger;
+    # if equal, put one under the other, and increase the rank of the set.
     #
     if    ($$rank [$set1] < $$rank [$set2]) {
         $$parent  [$set1] = $set2;
