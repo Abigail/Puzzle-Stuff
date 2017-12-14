@@ -8,6 +8,7 @@ no  warnings 'syntax';
 our $VERSION = '2017121401';
 
 use Puzzle::Stuff::UnionFind;
+use Puzzle::Stuff::KnotHash;
 
 
 1;
