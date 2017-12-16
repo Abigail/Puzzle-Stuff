@@ -9,6 +9,7 @@ our $VERSION = '2017121401';
 
 use Puzzle::Stuff::UnionFind;
 use Puzzle::Stuff::KnotHash;
+use Puzzle::Stuff::Polynome;
 
 
 1;
