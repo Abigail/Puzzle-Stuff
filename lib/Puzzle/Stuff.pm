@@ -11,6 +11,7 @@ use Puzzle::Stuff::UnionFind;
 use Puzzle::Stuff::KnotHash;
 use Puzzle::Stuff::Polynome;
 use Puzzle::Stuff::VM::AoC;
+use Puzzle::Stuff::TuringMachine;
 
 
 1;
